@@ -312,5 +312,3 @@ remdri$server$stop()
 ###################################################################################################
 
 
-
-remcli$findElement("xpath", "/html/body/div[2]/div/div/div/div[2]/div/div/div[1]/div[1]/div[1]/section/main/div[1]/div/div/div[3]/div/div[1]/div/article[4]/div/div[3]/div/div/div[2]/section/div/form/div/textarea")
