@@ -6,7 +6,6 @@ library(xml2)
 library(tidyverse)
 library(rvest)
 library(writexl)
-library(ascii)
 
 
 follers <- read_html("input/followers_1.html")
