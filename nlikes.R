@@ -36,15 +36,21 @@ remcli$setTimeout(type = "page load", milliseconds = 20000)
 Sys.sleep(runif(n=1, min=5, max=6))
 
 # username
-uname<-remcli$findElement("name", "username")
-uname$sendKeysToElement(list("hochidogui"))
-
+hodog<-unlist(strsplit("hochidogui", split = ""))
+for(i in 1:length(hodog)){
+  uname<-remcli$findElement("name", "username")
+  uname$sendKeysToElement(list(hodog[i]))
+  Sys.sleep(abs(rnorm(1, 0.1, 0.1)))
+}
 Sys.sleep(runif(n=1, min=2, max=5))
 
 # password
-pword<-remcli$findElement("name", "password")
-pword$sendKeysToElement(list("Lavacolas69Hh?ig"))
-
+elpir<-unlist(strsplit("el~pira69Hh?ig", split = ""))
+for(i in 1:length(elpir)){
+  pword<-remcli$findElement("name", "password")
+  pword$sendKeysToElement(list(elpir[i]))
+  Sys.sleep(abs(rnorm(1, 0.1, 0.1)))
+}
 Sys.sleep(runif(n=1, min=2, max=5))
 
 # enter
@@ -70,9 +76,9 @@ source("comments.R")
 
 # comment genre: 
 # genz, bronobro, boomer, victorian, bloodborne, lovecraft, hemingway,
-# epic, norse, classics 
+# epic, norse, classics, ggm, borges, holt, basicpt 
 
-(comments<-c(boomer,bronobro, genz)) 
+(comments<-c(basicpt)) 
 
 # Initialize variables
 # Initialize variables
@@ -86,6 +92,12 @@ megascroll_attempts<-0
 mcscrolly<-0
 fuge<-0
 chopbloc<-1
+#remcli$navigate(tunfol[chopbloc])
+
+prob.like <- 0.1
+prob.comm <- 0.00
+prob.unfol <- 0.1
+#tunfol<-c()
 
 # Loop through posts dynamically
 t1<-system.time(while (scroll_attempts < max_scroll_attempts) {
@@ -178,7 +190,7 @@ t1<-system.time(while (scroll_attempts < max_scroll_attempts) {
     cat("prob. like:", 
         "\np-value =", round(pval1, 4), "; number = ", round(nval1, 4),
         "\n")
-    if(pval1<0.2){
+    if(pval1 < prob.like){
       cat(green("Mikey Likey!\n"))
       likes<-likes+1
       like<-remcli$findElement("xpath", "/html/body/div[2]/div/div/div/div[2]/div/div/div[1]/div[1]/div[1]/section/main/div[1]/div[1]/div/div[3]/div/div[1]/div/article[4]/div/div[3]/div/div/section[1]/div[1]/span[1]/div/div/div")
@@ -188,7 +200,7 @@ t1<-system.time(while (scroll_attempts < max_scroll_attempts) {
       
     }
     # give a comment
-    if(pnorm(rnorm(1))<0.02){
+    if(pnorm(rnorm(1))<prob.comm){
       
       cat(green("INCOMING COMMENT!!", 
                 "\n"))
@@ -250,7 +262,7 @@ t1<-system.time(while (scroll_attempts < max_scroll_attempts) {
       cc<-cc+1
     }
     
-    if(pnorm(rnorm(1))<0.1 & chopbloc <= length(tunfol)){
+    if(pnorm(rnorm(1))<prob.unfol & chopbloc <= length(tunfol)){
 
       cat(red("CHOP BLOCKING TIME!!!\n"))
       cat(blue(chopbloc, "\n"))
@@ -271,7 +283,7 @@ t1<-system.time(while (scroll_attempts < max_scroll_attempts) {
 
       try(nmf<-remcli$findElement("xpath", "/html/body/div[5]/div[2]/div/div/div[1]/div/div[2]/div/div/div/div/div[2]/div/div/div/div[8]/div[1]"), silent = T)
       Sys.sleep(abs(rnorm(1, 0.5, 0.1)))
-      nmf$clickElement()
+      try(nmf$clickElement())
       Sys.sleep(abs(rnorm(1, 5, 1)))
 
       chopbloc<-chopbloc+1
@@ -320,6 +332,7 @@ cc
 chopbloc
 
 tunfol
+
 
 remdri$server$stop()
 
