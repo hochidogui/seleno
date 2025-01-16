@@ -1,4 +1,3 @@
-
 library(RSelenium)
 library(wdman)
 library(netstat)
@@ -8,7 +7,7 @@ library(xml2)
 library(tidyverse)
 library(rvest)
 library(writexl)
-library(ascii)
+
 
 follers <- read_html("input/followers_1.html")
 
@@ -31,6 +30,65 @@ fings<-unlist(lapply(foing, function(z) substr(z, 27, nchar(z))))
 fings
 
 ###################################################################################################
+# open instagram
+
+# Set up Firefox profile
+fprof <- makeFirefoxProfile(list(
+  "general.useragent.override" = "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:94.0) Gecko/20100101 Firefox/94.0",  # Custom user-agent
+  "dom.webdriver.enabled" = FALSE,  # Disable webdriver flag
+  "useAutomationExtension" = FALSE  # Disable automation extension
+))
+
+
+remdri <- rsDriver(browser = "firefox",
+                   chromever = NULL,
+                   port = 4445L,
+                   extraCapabilities = fprof,
+                   verbose = F)
+
+remcli <- remdri$client
+#remcli$open()
+
+remcli$navigate("https://www.instagram.com/")
+
+Sys.sleep(runif(n=1, min=5, max=6))
+remcli$setTimeout(type = "page load", milliseconds = 20000) 
+
+# optional cookies only
+oca<-remcli$findElement("xpath", '//button[contains(text(),"Optionale Cookies ablehnen")]')
+oca$clickElement()
+
+remcli$setTimeout(type = "page load", milliseconds = 20000) 
+Sys.sleep(runif(n=1, min=5, max=6))
+
+# username
+uname<-remcli$findElement("name", "username")
+uname$sendKeysToElement(list("hochidogui"))
+
+Sys.sleep(runif(n=1, min=2, max=5))
+
+# password
+pword<-remcli$findElement("name", "password")
+pword$sendKeysToElement(list("el~pira69Hh?ig"))
+
+Sys.sleep(runif(n=1, min=2, max=5))
+
+# enter
+enter<-remcli$findElement("css selector", "button[type='submit']")
+enter$clickElement()
+
+remcli$setTimeout(type = "page load", milliseconds = 20000) 
+Sys.sleep(runif(n=1, min=12, max=15))
+
+# not now
+nn<-remcli$findElement("xpath", '//div[contains(text(),"Jetzt nicht")]')
+nn$clickElement()
+
+remcli$setTimeout(type = "page load", milliseconds = 20000) 
+Sys.sleep(runif(n=1, min=5, max=6))
+
+#gefol<-remcli$findElement("xpath", "/html/body/div[2]/div/div/div/div[2]/div/div/div[1]/div[1]/div[1]/section/main/div[1]/div/div/div[1]/div/div[1]/div/div/div[2]/span/span/span")
+#gefol$clickElement()
 
 # compare followers vs following
 
@@ -54,64 +112,73 @@ scroll_attempts <- 0
 df<-data.frame(matrix(NA, nrow = dim(toxtract)[1], ncol = 0))
 
 t2<-system.time(while (scroll_attempts < max_scroll_attempts) {
-
- remcli$executeScript(paste0("window.scrollBy(0, ", rnorm(1, 750, 75),");")) # Scroll down to load more posts
- Sys.sleep(abs(rnorm(1, 2, 0.5)))
- gt<-try(name<-remcli$findElement("xpath", "/html/body/div[2]/div/div/div/div[2]/div/div/div[1]/div[1]/div[1]/section/main/div[1]/div/div/div[3]/div/div[1]/div/article[5]/div/div[1]/div/div[2]/div/div[1]/div[1]/div/span/span/span/div/a/div/div/span"), silent = T)
-
- if (!inherits(gt, "try-error")) {
   
-  mm<-try(remcli$mouseMoveToLocation(webElement = name), silent = T)
-  Sys.sleep(abs(rnorm(1, 5, 0.5)))
+  remcli$executeScript(paste0("window.scrollBy(0, ", rnorm(1, 750, 75),");")) # Scroll down to load more posts
+  Sys.sleep(abs(rnorm(1, 2, 0.5)))
+  gt<-try(name<-remcli$findElement("xpath", "/html/body/div[2]/div/div/div/div[2]/div/div/div[1]/div[1]/div[1]/section/main/div[1]/div/div/div[3]/div/div[1]/div/article[5]/div/div[1]/div/div[2]/div/div[1]/div[1]/div/span/span/span/div/a/div/div/span"), silent = T)
   
-  if (!inherits(mm, "try-error")) {
-
-    gi<-try(llowers<-remcli$findElement("xpath", "/html/body/div[2]/div/div/div/div[2]/div/div/div[2]/div/div/div[1]/div[1]/div"), silent = T)
-       
-     if (!inherits(gi, "try-error")) {
-       text<-unlist(llowers$getElementText())
-       print(text)
-
-       nom<-names(unlist(sapply(fings, function(z) grep(z, text))))
-       lower<-as.numeric(gsub("\\.", "", substr(text, regexpr("Beiträge\n", text)[1]+nchar("Beiträge\n"), (regexpr("\nFollower", text)[1]-1))))
-       lowing<-as.numeric(gsub("\\.", "", substr(text, regexpr("Follower\n", text)[1]+nchar("Follower\n"), (regexpr("\nGefolgt", text)[1]-1))))
-       osts<-as.numeric(gsub("[^0-9]", "", substr(text, regexpr("\nBeiträge", text)[1]-4, regexpr("\nBeiträge", text)[1]-1))) 
-
-       nom
-       osts
-       lower
-       lowing
-       lower/lowing
-
-       row<-c(nom, osts, lower, lowing, lower/lowing)
-
-       df<-rbind(df, row)
-       cat(blue(dim(df)[1], "\n"))
-     } else {
-       next
-     } 
+  if (!inherits(gt, "try-error")) {
+    
+    mm<-try(remcli$mouseMoveToLocation(webElement = name), silent = T)
+    Sys.sleep(abs(rnorm(1, 5, 0.5)))
+    
+    if (!inherits(mm, "try-error")) {
+      
+      gi<-try(llowers<-remcli$findElement("xpath", "/html/body/div[2]/div/div/div/div[2]/div/div/div[2]/div/div/div[1]/div[1]/div"), silent = T)
+      
+      if (!inherits(gi, "try-error")) {
+        text<-unlist(llowers$getElementText())
+        print(text)
+        
+        nom<-names(unlist(sapply(fings, function(z) grep(z, text))))
+        lower<-as.numeric(gsub("\\.", "", substr(text, regexpr("Beiträge\n", text)[1]+nchar("Beiträge\n"), (regexpr("\nFollower", text)[1]-1))))
+        lowing<-as.numeric(gsub("\\.", "", substr(text, regexpr("Follower\n", text)[1]+nchar("Follower\n"), (regexpr("\nGefolgt", text)[1]-1))))
+        osts<-as.numeric(gsub("[^0-9]", "", substr(text, regexpr("\nBeiträge", text)[1]-5, regexpr("\nBeiträge", text)[1]-1))) 
+        
+        nom
+        osts
+        lower
+        lowing
+        lower/lowing
+        
+        row<-c(nom, osts, lower, lowing, lower/lowing)
+        
+        cat(blue(row, "\n"))
+        
+        df<-rbind(df, row)
+        cat(blue(dim(df)[1], "\n"))
+      } else {
+        next
+      } 
+    } else {
+      next
+    }
+    
   } else {
     next
   }
-  
- } else {
-   next
- }
- scroll_attempts<-scroll_attempts+1
+  scroll_attempts<-scroll_attempts+1
 })
-
 
 
 colnames(df)<-c("account", "posts", "follower", "following", "ratio")
 head(df)
 
-unique(df$account)
+dim(df)
+
+length(unique(df$account))
+
+dim(unique(df))
 
 df1<-df[!duplicated(df$account),]
 
 dim(df1)
 
 df05<-df1[df1 %in% df1$ratio<=0.5,]
+
+
+remdri$server$stop()
+
 
 
 gsub("\\.", "", text)
@@ -124,3 +191,19 @@ nchar("Beiträge\n")
 regexpr("Beiträge\n", text)[1]+nchar("Beiträge\n")
 
 regexpr("\nFollower", text)[1]
+
+text
+as.numeric(gsub("\\.", "", substr(text, regexpr("Beiträge\n", text)[1]+nchar("Beiträge\n"), (regexpr("\nFollower", text)[1]-1))))
+
+substr(text, 47, 60)
+
+substr(text, 56-9, 60)
+
+nchar(text)
+
+
+
+
+as.numeric(gsub("\\.", "", substr(text, regexpr("Follower\n", text)[1]+nchar("Follower\n"), (regexpr("\nGefolgt", text)[1]-1))))
+
+as.numeric(gsub("[^0-9]", "", substr(text, regexpr("\nBeiträge", text)[1]-5, regexpr("\nBeiträge", text)[1]-1)))
