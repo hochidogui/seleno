@@ -1,4 +1,3 @@
-
 library(RSelenium)
 library(wdman)
 library(netstat)
@@ -78,7 +77,7 @@ source("comments.R")
 # genz, bronobro, boomer, victorian, bloodborne, lovecraft, hemingway,
 # epic, norse, classics, ggm, borges, holt, basicpt 
 
-(comments<-c(basicpt)) 
+(comments<-c(boomer)) 
 
 # Initialize variables
 # Initialize variables
@@ -91,12 +90,12 @@ scrollps<-c()
 megascroll_attempts<-0
 mcscrolly<-0
 fuge<-0
-chopbloc<-1
+chopbloc<-33
 #remcli$navigate(tunfol[chopbloc])
 
 prob.like <- 0.1
-prob.comm <- 0.00
-prob.unfol <- 0.1
+prob.comm <- 0.005
+prob.unfol <- 0.125
 #tunfol<-c()
 
 # Loop through posts dynamically
@@ -108,8 +107,8 @@ t1<-system.time(while (scroll_attempts < max_scroll_attempts) {
   if (processed_posts >= length(posts)) {
     
     # look if post is ad or video
-    anz<-try(remcli$findElement("xpath", "/html/body/div[2]/div/div/div/div[2]/div/div/div[1]/div[1]/div[1]/section/main/div[1]/div[1]/div/div[3]/div/div[1]/div/article[5]/div/div[2]/div[1]/div/div/div[1]/div/div/div[2]"), silent = T)
-    
+    anz<-try(remcli$findElement("xpath", "/html/body/div[2]/div/div/div[2]/div/div/div[1]/div[1]/div[1]/section/main/div[1]/div/div/div[3]/div/div[1]/div/article[4]/div/div[2]/div[1]/div/div/div[1]/div/div/div[2]"), silent = T)
+                                        
     if (inherits(anz, "try-error") & mcscrolly <=7) {
       cat(silver("McS =", mcscrolly), blue(scroll_attempts, "\n"))
       Sys.sleep(abs(rnorm(1, 1, 1)))
@@ -121,7 +120,7 @@ t1<-system.time(while (scroll_attempts < max_scroll_attempts) {
       home$clickElement()
       Sys.sleep(abs(rnorm(1, 5, 1)))
       if((fuge %% 2) == 0){
-        gefol<-remcli$findElement("xpath", "/html/body/div[2]/div/div/div/div[2]/div/div/div[1]/div[1]/div[1]/section/main/div[1]/div/div/div[1]/div/div[1]/div/div/div[2]/span/span/span")
+        gefol<-remcli$findElement("xpath", "/html/body/div[2]/div/div/div[2]/div/div/div[1]/div[1]/div[1]/section/main/div[1]/div/div/div[1]/div/div[1]/div/div/div[2]/span/span/span")
         gefol$clickElement()
       } 
       fuge<-fuge+1
@@ -147,7 +146,7 @@ t1<-system.time(while (scroll_attempts < max_scroll_attempts) {
           remcli$setTimeout(type = "page load", milliseconds = 20000)
           Sys.sleep(abs(rnorm(1, 5, 1)))
           if((fuge %% 2) == 0){
-            gefol<-remcli$findElement("xpath", "/html/body/div[2]/div/div/div/div[2]/div/div/div[1]/div[1]/div[1]/section/main/div[1]/div/div/div[1]/div/div[1]/div/div/div[2]/span/span/span")
+            gefol<-remcli$findElement("xpath", "/html/body/div[2]/div/div/div[2]/div/div/div[1]/div[1]/div[1]/section/main/div[1]/div/div/div[1]/div/div[1]/div/div/div[2]/span/span/span")
             gefol$clickElement()
           } 
           megascroll_attempts<-0
@@ -173,7 +172,7 @@ t1<-system.time(while (scroll_attempts < max_scroll_attempts) {
     }
     
     # center post
-    pp<-try(center<-remcli$findElement("xpath", "/html/body/div[2]/div/div/div/div[2]/div/div/div[1]/div[1]/div[1]/section/main/div[1]/div[1]/div/div[3]/div/div[1]/div/article[5]/div/div[2]/div[1]/div/div/div[1]/div/div/div[2]"), silent = T)
+    pp<-try(center<-remcli$findElement("xpath", "/html/body/div[2]/div/div/div[2]/div/div/div[1]/div[1]/div[1]/section/main/div[1]/div/div/div[3]/div/div[1]/div/article[4]/div/div[2]/div[1]/div/div/div[1]/div/div/div[2]"), silent = T)
     if (!inherits(pp, "try-error")) {
       remcli$executeScript("arguments[0].scrollIntoView({block: 'center'});", list(center))
       Sys.sleep(abs(rnorm(1, 0.5, 0.5)))
@@ -193,8 +192,8 @@ t1<-system.time(while (scroll_attempts < max_scroll_attempts) {
     if(pval1 < prob.like){
       cat(green("Mikey Likey!\n"))
       likes<-likes+1
-      like<-remcli$findElement("xpath", "/html/body/div[2]/div/div/div/div[2]/div/div/div[1]/div[1]/div[1]/section/main/div[1]/div[1]/div/div[3]/div/div[1]/div/article[4]/div/div[3]/div/div/section[1]/div[1]/span[1]/div/div/div")
-      like$clickElement()
+      like<-remcli$findElement("xpath", "/html/body/div[2]/div/div/div[2]/div/div/div[1]/div[1]/div[1]/section/main/div[1]/div/div/div[3]/div/div[1]/div/article[4]/div/div[3]/div/div/section[1]/div[1]/span[1]/div/div/div")
+      like$clickElement()               
       Sys.sleep(abs(rnorm(1, 1, 0.5)))
       
       
@@ -211,49 +210,49 @@ t1<-system.time(while (scroll_attempts < max_scroll_attempts) {
       print(whichComment)
       
       lbyl<-unlist(strsplit(whichComment, split = ""))
-      cm1<-try(comment1<-remcli$findElement("xpath", "/html/body/div[2]/div/div/div/div[2]/div/div/div[1]/div[1]/div[1]/section/main/div[1]/div/div/div[3]/div/div[1]/div/article[4]/div/div[3]/div/div/div[3]/section/div/form/div/textarea"), silent = F)
-      cm2<-try(comment2<-remcli$findElement("xpath", "/html/body/div[2]/div/div/div/div[2]/div/div/div[1]/div[1]/div[1]/section/main/div[1]/div/div/div[3]/div/div[1]/div/article[4]/div/div[3]/div/div/div[4]/section/div/form/div/textarea"), silent = F)
-      cm3<-try(comment3<-remcli$findElement("xpath", "/html/body/div[2]/div/div/div/div[2]/div/div/div[1]/div[1]/div[1]/section/main/div[1]/div/div/div[3]/div/div[1]/div/article[4]/div/div[3]/div/div/div[2]/section/div/form/div/textarea"), silent = F)
-      
+      cm1<-try(comment1<-remcli$findElement("xpath", "/html/body/div[2]/div/div/div[2]/div/div/div[1]/div[1]/div[1]/section/main/div[1]/div/div/div[3]/div/div[1]/div/article[4]/div/div[3]/div/div/div[3]/section/div/form/div/textarea"), silent = F)
+      cm2<-try(comment2<-remcli$findElement("xpath", "/html/body/div[2]/div/div/div[2]/div/div/div[1]/div[1]/div[1]/section/main/div[1]/div/div/div[3]/div/div[1]/div/article[4]/div/div[3]/div/div/div[4]/section/div/form/div/textarea"), silent = F)
+      cm3<-try(comment3<-remcli$findElement("xpath", "/html/body/div[2]/div/div/div[2]/div/div/div[1]/div[1]/div[1]/section/main/div[1]/div/div/div[3]/div/div[1]/div/article[4]/div/div[3]/div/div/div[2]/section/div/form/div/textarea"), silent = F)
+                                                     
       if (!inherits(cm1, "try-error")) {
         remcli$executeScript("arguments[0].scrollIntoView({block: 'center'});", list(comment1))
         for(i in 1:length(lbyl)){
-          comment1<-remcli$findElement("xpath", "/html/body/div[2]/div/div/div/div[2]/div/div/div[1]/div[1]/div[1]/section/main/div[1]/div/div/div[3]/div/div[1]/div/article[4]/div/div[3]/div/div/div[3]/section/div/form/div/textarea")
+          comment1<-remcli$findElement("xpath", "/html/body/div[2]/div/div/div[2]/div/div/div[1]/div[1]/div[1]/section/main/div[1]/div/div/div[3]/div/div[1]/div/article[4]/div/div[3]/div/div/div[3]/section/div/form/div/textarea")
           comment1$sendKeysToElement(list(lbyl[i]))
           Sys.sleep(abs(rnorm(1, 0.1, 0.1)))
         }
         Sys.sleep(abs(rnorm(1, 0.2, 0.1)))
         comment1$sendKeysToElement(list(key="enter"))
         Sys.sleep(abs(rnorm(1, 0.5, 0.1)))
-        like<-remcli$findElement("xpath", "/html/body/div[2]/div/div/div/div[2]/div/div/div[1]/div[1]/div[1]/section/main/div[1]/div[1]/div/div[3]/div/div[1]/div/article[4]/div/div[3]/div/div/section[1]/div[1]/span[1]/div/div/div")
+        like<-remcli$findElement("xpath", "/html/body/div[2]/div/div/div[2]/div/div/div[1]/div[1]/div[1]/section/main/div[1]/div/div/div[3]/div/div[1]/div/article[4]/div/div[3]/div/div/section[1]/div[1]/span[1]/div/div/div")
         like$clickElement()
         Sys.sleep(abs(rnorm(1, 0.5, 0.1)))
         
       } else if (!inherits(cm2, "try-error")) {
         remcli$executeScript("arguments[0].scrollIntoView({block: 'center'});", list(comment2))
         for(i in 1:length(lbyl)){
-          comment2<-remcli$findElement("xpath", "/html/body/div[2]/div/div/div/div[2]/div/div/div[1]/div[1]/div[1]/section/main/div[1]/div/div/div[3]/div/div[1]/div/article[4]/div/div[3]/div/div/div[4]/section/div/form/div/textarea")
+          comment2<-remcli$findElement("xpath", "/html/body/div[2]/div/div/div[2]/div/div/div[1]/div[1]/div[1]/section/main/div[1]/div/div/div[3]/div/div[1]/div/article[4]/div/div[3]/div/div/div[4]/section/div/form/div/textarea")
           comment2$sendKeysToElement(list(lbyl[i]))
           Sys.sleep(abs(rnorm(1, 0.1, 0.1)))
         }
         Sys.sleep(abs(rnorm(1, 0.2, 0.1)))
         comment2$sendKeysToElement(list(key="enter"))
         Sys.sleep(abs(rnorm(1, 0.5, 0.1)))
-        like<-remcli$findElement("xpath", "/html/body/div[2]/div/div/div/div[2]/div/div/div[1]/div[1]/div[1]/section/main/div[1]/div[1]/div/div[3]/div/div[1]/div/article[4]/div/div[3]/div/div/section[1]/div[1]/span[1]/div/div/div")
+        like<-remcli$findElement("xpath", "/html/body/div[2]/div/div/div[2]/div/div/div[1]/div[1]/div[1]/section/main/div[1]/div/div/div[3]/div/div[1]/div/article[4]/div/div[3]/div/div/section[1]/div[1]/span[1]/div/div/div")
         like$clickElement()
         Sys.sleep(abs(rnorm(1, 0.5, 0.1)))
         
       } else if (!inherits(cm3, "try-error")) {
         remcli$executeScript("arguments[0].scrollIntoView({block: 'center'});", list(comment3))
         for(i in 1:length(lbyl)){
-          comment3<-remcli$findElement("xpath", "/html/body/div[2]/div/div/div/div[2]/div/div/div[1]/div[1]/div[1]/section/main/div[1]/div/div/div[3]/div/div[1]/div/article[4]/div/div[3]/div/div/div[2]/section/div/form/div/textarea")
+          comment3<-remcli$findElement("xpath", "/html/body/div[2]/div/div/div[2]/div/div/div[1]/div[1]/div[1]/section/main/div[1]/div/div/div[3]/div/div[1]/div/article[4]/div/div[3]/div/div/div[2]/section/div/form/div/textarea")
           comment3$sendKeysToElement(list(lbyl[i]))
           Sys.sleep(abs(rnorm(1, 0.1, 0.1)))
         }
         Sys.sleep(abs(rnorm(1, 0.2, 0.1)))
         comment3$sendKeysToElement(list(key="enter"))
         Sys.sleep(abs(rnorm(1, 0.5, 0.1)))
-        like<-remcli$findElement("xpath", "/html/body/div[2]/div/div/div/div[2]/div/div/div[1]/div[1]/div[1]/section/main/div[1]/div[1]/div/div[3]/div/div[1]/div/article[4]/div/div[3]/div/div/section[1]/div[1]/span[1]/div/div/div")
+        like<-remcli$findElement("xpath", "/html/body/div[2]/div/div/div[2]/div/div/div[1]/div[1]/div[1]/section/main/div[1]/div/div/div[3]/div/div[1]/div/article[4]/div/div[3]/div/div/section[1]/div[1]/span[1]/div/div/div")
         like$clickElement()
         Sys.sleep(abs(rnorm(1, 0.5, 0.1)))
         
@@ -263,43 +262,43 @@ t1<-system.time(while (scroll_attempts < max_scroll_attempts) {
     }
     
     if(pnorm(rnorm(1))<prob.unfol & chopbloc <= length(tunfol)){
-
+      
       cat(red("CHOP BLOCKING TIME!!!\n"))
       cat(blue(chopbloc, "\n"))
-
+      
       Sys.sleep(abs(rnorm(1, 1, 1)))
       remcli$navigate(tunfol[chopbloc])
       Sys.sleep(abs(rnorm(1, 10, 1)))
-      exist<-try(butfol<-remcli$findElement("xpath", "/html/body/div[2]/div/div/div/div[2]/div/div/div[1]/div[2]/div/div[1]/section/main/div/header/section[2]/div/div/div[2]/div/div[1]/button"), silent = T)
-      if (inherits(exist, "try-error")) {
+      exist<-try(butfol<-remcli$findElement("xpath", "/html/body/div[2]/div/div/div[2]/div/div/div[1]/div[2]/div/div[1]/section/main/div/header/section[2]/div/div/div[2]/div/div[1]/button"), silent = T)
+      if (inherits(exist, "try-error")) {            
         Sys.sleep(abs(rnorm(1, 10, 1)))
-        try(butfol<-remcli$findElement("xpath", "/html/body/div[2]/div/div/div/div[2]/div/div/div[1]/div[2]/div/div[1]/section/main/div/header/section[2]/div/div/div[2]/div/div[1]/button"))
+        try(butfol<-remcli$findElement("xpath", "/html/body/div[2]/div/div/div[2]/div/div/div[1]/div[2]/div/div[1]/section/main/div/header/section[2]/div/div/div[2]/div/div[1]/button"))
         #chopbloc<-chopbloc+1
       }
-
+      
       Sys.sleep(abs(rnorm(1, 0.5, 0.1)))
       try(butfol$clickElement())
       Sys.sleep(abs(rnorm(1, 3, 1)))
-
+      
       try(nmf<-remcli$findElement("xpath", "/html/body/div[5]/div[2]/div/div/div[1]/div/div[2]/div/div/div/div/div[2]/div/div/div/div[8]/div[1]"), silent = T)
-      Sys.sleep(abs(rnorm(1, 0.5, 0.1)))
+      Sys.sleep(abs(rnorm(1, 0.5, 0.1)))  
       try(nmf$clickElement())
       Sys.sleep(abs(rnorm(1, 5, 1)))
-
+      
       chopbloc<-chopbloc+1
-
+      
       #remcli$goBack()
-
+      
       # come home
       home<-remcli$findElement("xpath", "//a[@href='/']")
       home$clickElement()
       remcli$setTimeout(type = "page load", milliseconds = 20000)
       Sys.sleep(abs(rnorm(1, 5, 1)))
       if((fuge %% 2) == 0){
-        gefol<-remcli$findElement("xpath", "/html/body/div[2]/div/div/div/div[2]/div/div/div[1]/div[1]/div[1]/section/main/div[1]/div/div/div[1]/div/div[1]/div/div/div[2]/span/span/span")
+        gefol<-remcli$findElement("xpath", "/html/body/div[2]/div/div/div[2]/div/div/div[1]/div[1]/div[1]/section/main/div[1]/div/div/div[1]/div/div[1]/div/div/div[2]/span/span/span")
         gefol$clickElement()
       }
-
+      
       fuge<-fuge+1
     }
     
@@ -338,5 +337,26 @@ remdri$server$stop()
 
 ###################################################################################################
 ###################################################################################################
+
+
+(t1[3]/60)/60
+
+(likes*100)/scroll_attempts
+
+(cc*100)/scroll_attempts
+
+scroll_attempts
+likes
+cc
+chopbloc
+
+tunfol
+
+remdri$server$stop()
+
+###################################################################################################
+###################################################################################################
+
+
 
 
