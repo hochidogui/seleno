@@ -1,3 +1,4 @@
+
 library(RSelenium)
 library(wdman)
 library(netstat)
@@ -101,8 +102,11 @@ length(inter)
 toxtract<-data.frame(accounts=intersect(fers, fings))
 dim(toxtract)
 
+gefolgt<-paste0("/html/body/div[1]/div/div/div[2]/div/div/div[1]/div[1]/div[1]/section/main/div[1]/div/div/div[1]/div/div[1]/div/div/div[2]/span/span/span |
+                 /html/body/div[2]/div/div/div[2]/div/div/div[1]/div[1]/div[1]/section/main/div[1]/div/div/div[1]/div/div[1]/div/div/div[2]/span/span/span")
 
-gefol<-remcli$findElement("xpath", "/html/body/div[2]/div/div/div/div[2]/div/div/div[1]/div[1]/div[1]/section/main/div[1]/div/div/div[1]/div/div[1]/div/div/div[2]/span/span/span")
+
+gefol<-remcli$findElement("xpath", gefolgt) 
 gefol$clickElement()
 
 
@@ -111,30 +115,55 @@ scroll_attempts <- 0
 
 df<-data.frame(matrix(NA, nrow = dim(toxtract)[1], ncol = 0))
 
+hovername<-paste0("/html/body/div[1]/div/div/div[2]/div/div/div[1]/div[1]/div[1]/section/main/div[1]/div/div/div[3]/div/div[1]/div/article[2]/div/div[1]/div/div[2]/div/div[1]/div[1]/div/span/span/span/div/a/div/div/span |
+                   /html/body/div[2]/div/div/div[2]/div/div/div[1]/div[1]/div[1]/section/main/div[1]/div/div/div[3]/div/div[1]/div/article[2]/div/div[1]/div/div[2]/div/div[1]/div[1]/div/span/span/span/div/a/div/div/span |
+                   /html/body/div[1]/div/div/div[2]/div/div/div[1]/div[1]/div[1]/section/main/div[1]/div/div/div[3]/div/div[1]/div/article[5]/div/div[1]/div/div[2]/div/div[1]/div[1]/div/span/span/span/span/div/a/div/div/span |
+                   /html/body/div[2]/div/div/div[2]/div/div/div[1]/div[1]/div[1]/section/main/div[1]/div/div/div[3]/div/div[1]/div/article[5]/div/div[1]/div/div[2]/div/div[1]/div[1]/div/span/span/span/span/div/a/div/div/span")
+
+hoverbox<-paste0("/html/body/div[1]/div/div/div[2]/div/div/div[2]/div/div/div[1]/div[1]/div |
+                  /html/body/div[2]/div/div/div[2]/div/div/div[2]/div/div/div[1]/div[1]/div")
+
 t2<-system.time(while (scroll_attempts < max_scroll_attempts) {
   
   remcli$executeScript(paste0("window.scrollBy(0, ", rnorm(1, 750, 75),");")) # Scroll down to load more posts
   Sys.sleep(abs(rnorm(1, 2, 0.5)))
-  gt<-try(name<-remcli$findElement("xpath", "/html/body/div[2]/div/div/div/div[2]/div/div/div[1]/div[1]/div[1]/section/main/div[1]/div/div/div[3]/div/div[1]/div/article[5]/div/div[1]/div/div[2]/div/div[1]/div[1]/div/span/span/span/div/a/div/div/span"), silent = T)
-  
+  gt<-try(name<-remcli$findElement("xpath", hovername), silent = T)
+  remcli$executeScript("arguments[0].scrollIntoView({block: 'center'});", list(name))
+                                            
   if (!inherits(gt, "try-error")) {
     
     mm<-try(remcli$mouseMoveToLocation(webElement = name), silent = T)
     Sys.sleep(abs(rnorm(1, 5, 0.5)))
     
     if (!inherits(mm, "try-error")) {
-      
-      gi<-try(llowers<-remcli$findElement("xpath", "/html/body/div[2]/div/div/div/div[2]/div/div/div[2]/div/div/div[1]/div[1]/div"), silent = T)
+                                                   
+      gi<-try(llowers<-remcli$findElement("xpath", hoverbox), silent = T)
       
       if (!inherits(gi, "try-error")) {
         text<-unlist(llowers$getElementText())
+        utext<-unlist(strsplit(text, split = ""))
+        nposis<-c()
+        for(i in 1:length(utext)){
+          if (utext[i] == "\n"){
+            nposis<-append(nposis, i)
+          }
+        }
+        
         print(text)
+        length(nposis)
+        nom<-substr(text, 1, nposis[1]-1)
         
-        nom<-names(unlist(sapply(fings, function(z) grep(z, text))))
-        lower<-as.numeric(gsub("\\.", "", substr(text, regexpr("Beiträge\n", text)[1]+nchar("Beiträge\n"), (regexpr("\nFollower", text)[1]-1))))
-        lowing<-as.numeric(gsub("\\.", "", substr(text, regexpr("Follower\n", text)[1]+nchar("Follower\n"), (regexpr("\nGefolgt", text)[1]-1))))
-        osts<-as.numeric(gsub("[^0-9]", "", substr(text, regexpr("\nBeiträge", text)[1]-5, regexpr("\nBeiträge", text)[1]-1))) 
-        
+        if(substr(text, nposis[3]+1, nposis[4]-1) == "Beiträge"){
+          osts<-as.numeric(gsub("\\.", "", substr(text, nposis[2]+1, nposis[3]-1)))
+          lower<-as.numeric(gsub("\\.", "", substr(text, nposis[4]+1, nposis[5]-1)))
+          lowing<-as.numeric(gsub("\\.", "", substr(text, nposis[6]+1, nposis[7]-1)))
+          
+        } else if (substr(text, nposis[2]+1, nposis[3]-1) == "Beiträge"){
+          osts<-as.numeric(gsub("\\.", "", substr(text, nposis[1]+1, nposis[2]-1)))
+          lower<-as.numeric(gsub("\\.", "", substr(text, nposis[3]+1, nposis[4]-1)))
+          lowing<-as.numeric(gsub("\\.", "", substr(text, nposis[5]+1, nposis[6]-1)))
+        }     
+             
         nom
         osts
         lower
@@ -181,29 +210,6 @@ remdri$server$stop()
 
 
 
-gsub("\\.", "", text)
-
-
-class(regexpr("Beiträge\n", text))
-
-nchar("Beiträge\n")
-
-regexpr("Beiträge\n", text)[1]+nchar("Beiträge\n")
-
-regexpr("\nFollower", text)[1]
-
-text
-as.numeric(gsub("\\.", "", substr(text, regexpr("Beiträge\n", text)[1]+nchar("Beiträge\n"), (regexpr("\nFollower", text)[1]-1))))
-
-substr(text, 47, 60)
-
-substr(text, 56-9, 60)
-
-nchar(text)
 
 
 
-
-as.numeric(gsub("\\.", "", substr(text, regexpr("Follower\n", text)[1]+nchar("Follower\n"), (regexpr("\nGefolgt", text)[1]-1))))
-
-as.numeric(gsub("[^0-9]", "", substr(text, regexpr("\nBeiträge", text)[1]-5, regexpr("\nBeiträge", text)[1]-1)))
