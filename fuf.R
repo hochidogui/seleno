@@ -1,12 +1,31 @@
-
-#install.packages("tidyverse")
-#install.packages("xml2")
-#install.packages("rvest")
 library(xml2)
 library(tidyverse)
 library(rvest)
 library(writexl)
 
+# unpack
+downloads_path <- file.path(Sys.getenv("USERPROFILE"), "Downloads")
+files<-list.files(downloads_path, full.names = T)
+
+(fuf_dl<-files[which.max(file.info(files)$mtime)])
+
+winrar_path <- '"C:\\Program Files\\WinRAR\\WinRAR.exe"'
+
+unzip(fuf_dl, list = TRUE)
+
+folds <- unzip(fuf_dl, list = TRUE)$Name
+
+fters <- folds[grepl(paste0("^", "connections/followers_and_following/followers_1.html"), folds)]
+fting <- folds[grepl(paste0("^", "connections/followers_and_following/following.html"), folds)]
+
+unzip(fuf_dl, files = fters, exdir = tempdir())
+unzip(fuf_dl, files = fting, exdir = tempdir())
+
+file.rename(file.path(tempdir(), fters), file.path("C:/Users/hugot/Documents/fff/input", basename(fters)))
+file.rename(file.path(tempdir(), fting), file.path("C:/Users/hugot/Documents/fff/input", basename(fting)))
+
+file.info(list.files("input", full.names = T))$mtime
+# extract data from htmls
 
 follers <- read_html("input/followers_1.html")
 
@@ -45,28 +64,20 @@ length(setdiff(fings, fers))
 
 tunfol<-paste0("https://www.instagram.com/", setdiff(fings, fers), "/")
 
-df<-data.frame(tunfol=tunfol)
+print(length(tunfol))
 
-write_xlsx(df, "output/to_unfollow.xlsx")
-
-
-
-
+print(file.info(list.files("input", full.names = T))$mtime)
+#df<-data.frame(tunfol=tunfol)
+#write_xlsx(df, "output/to_unfollow.xlsx")
 
 
 
 
 
-data.frame(setdiff(fings, fers))[102,]
-remcli$navigate(tunfol[101])
 
 
-butfol<-remcli$findElement("xpath", "/html/body/div[2]/div/div/div/div[2]/div/div/div[1]/div[2]/div/div[1]/section/main/div/header/section[2]/div/div/div[2]/div/div[1]/button")
-butfol$clickElement()
-Sys.sleep(abs(rnorm(1, 3, 1)))
-nmf<-remcli$findElement("xpath", "/html/body/div[5]/div[2]/div/div/div[1]/div/div[2]/div/div/div/div/div[2]/div/div/div/div[8]/div[1]")
-nmf$clickElement()
-Sys.sleep(abs(rnorm(1, 5, 1)))
+
+
 
 
 
